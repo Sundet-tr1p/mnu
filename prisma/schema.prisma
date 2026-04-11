@@ -1,0 +1,196 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
+enum School {
+  VSP
+  MShZh
+  lox
+}
+
+enum ChatType {
+  GLOBAL
+  TEACHER
+}
+
+enum NotificationType {
+  NEW_MESSAGE
+  NEW_REVIEW
+  NEW_LIKE
+  NEW_COMMENT
+  NEW_ORGANIZATION
+  FAQ_UPDATED
+  SURVEY_UPDATED
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String
+  name        String
+  surname     String
+  role        Role     @default(STUDENT)
+  school      School?
+  specialty   String?
+  bio         String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  posts       Post[]
+  comments    Comment[]
+  likes       Like[]
+  reviews     Review[]
+  chats         ChatMember[]
+  messages      Message[]
+  notifications Notification[]
+
+  @@map("users")
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  comments  Comment[]
+  likes     Like[]
+
+  @@map("posts")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@map("comments")
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([postId, userId])
+  @@map("likes")
+}
+
+model Organization {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  icon        String?
+  logoUrl     String?
+  createdAt   DateTime @default(now())
+
+  @@map("organizations")
+}
+
+model Chat {
+  id        String     @id @default(cuid())
+  name      String
+  type      ChatType   @default(GLOBAL)
+  createdAt DateTime   @default(now())
+
+  members   ChatMember[]
+  messages  Message[]
+
+  @@map("chats")
+}
+
+model ChatMember {
+  id        String   @id @default(cuid())
+  chatId    String
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([chatId, userId])
+  @@map("chat_members")
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  text      String
+  chatId    String
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@map("messages")
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  comment   String
+  rating    Int      @default(5)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  teacherId String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, teacherId])
+  @@map("reviews")
+}
+
+model Survey {
+  id        String   @id @default(cuid())
+  title     String
+  link      String
+  createdAt DateTime @default(now())
+
+  @@map("surveys")
+}
+
+model Faq {
+  id       String  @id @default(cuid())
+  question String
+  answer   String
+  order    Int     @default(0)
+
+  @@map("faqs")
+}
+
+model Notification {
+  id        String             @id @default(cuid())
+  type      NotificationType
+  userId    String
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isRead    Boolean            @default(false)
+  data      String?
+  createdAt DateTime           @default(now())
+
+  @@map("notifications")
+}
+
+model File {
+  id        String   @id @default(cuid())
+  url       String
+  mimeType  String?
+  createdAt DateTime @default(now())
+
+  @@map("files")
+}
