@@ -5,6 +5,7 @@ import { loginSchema } from '@/lib/validators'
 import { createToken, getAuthCookieOptions } from '@/lib/jwt'
 import { errorResponse } from '@/lib/api-response'
 import { assertServerAuthConfig } from '@/lib/auth-env'
+import { prismaErrorUserHint } from '@/lib/prisma-errors'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
@@ -45,6 +46,10 @@ export async function POST(request: NextRequest) {
     return res
   } catch (error) {
     console.error('Login error:', error)
+    const prismaHint = prismaErrorUserHint(error)
+    if (prismaHint) {
+      return errorResponse(prismaHint, 503)
+    }
     const msg = error instanceof Error ? error.message : ''
     if (msg.includes('JWT_SECRET')) {
       return errorResponse(

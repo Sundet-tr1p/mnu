@@ -5,6 +5,7 @@ import { registerSchema } from '@/lib/validators'
 import { createToken, getAuthCookieOptions } from '@/lib/jwt'
 import { errorResponse } from '@/lib/api-response'
 import { assertServerAuthConfig } from '@/lib/auth-env'
+import { prismaErrorUserHint } from '@/lib/prisma-errors'
 import { ChatType, Prisma } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
@@ -81,6 +82,10 @@ export async function POST(request: NextRequest) {
       if (error.code === 'P2002') {
         return errorResponse('Пользователь с таким email уже существует', 409)
       }
+    }
+    const prismaHint = prismaErrorUserHint(error)
+    if (prismaHint) {
+      return errorResponse(prismaHint, 503)
     }
     const msg = error instanceof Error ? error.message : ''
     if (msg.includes('JWT_SECRET')) {

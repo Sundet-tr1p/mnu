@@ -4,8 +4,14 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
-const prisma = globalForPrisma.prisma ?? new PrismaClient()
+/** На Vercel в production нельзя создавать новый клиент на каждый запрос — исчерпываются соединения MySQL. */
+function createClient() {
+  return new PrismaClient({
+    log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+  })
+}
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+const prisma = globalForPrisma.prisma ?? createClient()
+globalForPrisma.prisma = prisma
 
 export default prisma
