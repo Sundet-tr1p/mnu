@@ -4,9 +4,16 @@ import prisma from '@/lib/db'
 import { registerSchema } from '@/lib/validators'
 import { createToken, getAuthCookieOptions } from '@/lib/jwt'
 import { errorResponse } from '@/lib/api-response'
-import { ChatType } from '@prisma/client'
+import { assertServerAuthConfig } from '@/lib/auth-env'
+import { ChatType, Prisma } from '@prisma/client'
+
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
+  const cfg = assertServerAuthConfig()
+  if (cfg) return cfg
+
   try {
     const body = await request.json()
     const validation = registerSchema.safeParse(body)
@@ -70,6 +77,34 @@ export async function POST(request: NextRequest) {
     return res
   } catch (error) {
     console.error('Register error:', error)
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        return errorResponse('Пользователь с таким email уже существует', 409)
+      }
+    }
+    const msg = error instanceof Error ? error.message : ''
+    if (msg.includes('JWT_SECRET')) {
+      return errorResponse(
+        'Сервер не настроен: задайте JWT_SECRET в переменных окружения хостинга.',
+        503,
+      )
+    }
+    if (
+      msg.includes('Invalid value for argument') ||
+      msg.includes('not found in enum') ||
+      msg.includes('School')
+    ) {
+      return errorResponse(
+        'Схема базы устарела: выполните на сервере npx prisma migrate deploy и перезапустите деплой.',
+        503,
+      )
+    }
+    if (msg.includes('Can\'t reach database') || msg.includes('P1001') || msg.includes('P1017')) {
+      return errorResponse(
+        'Не удаётся подключиться к базе данных. Проверьте DATABASE_URL и что MySQL доступен из интернета для Vercel.',
+        503,
+      )
+    }
     return errorResponse('Ошибка сервера', 500)
   }
 }

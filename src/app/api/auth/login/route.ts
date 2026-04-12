@@ -4,11 +4,15 @@ import prisma from '@/lib/db'
 import { loginSchema } from '@/lib/validators'
 import { createToken, getAuthCookieOptions } from '@/lib/jwt'
 import { errorResponse } from '@/lib/api-response'
+import { assertServerAuthConfig } from '@/lib/auth-env'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
+  const cfg = assertServerAuthConfig()
+  if (cfg) return cfg
+
   try {
     const body = await request.json()
     const validation = loginSchema.safeParse(body)
@@ -41,6 +45,19 @@ export async function POST(request: NextRequest) {
     return res
   } catch (error) {
     console.error('Login error:', error)
+    const msg = error instanceof Error ? error.message : ''
+    if (msg.includes('JWT_SECRET')) {
+      return errorResponse(
+        'Сервер не настроен: задайте JWT_SECRET в переменных окружения хостинга.',
+        503,
+      )
+    }
+    if (msg.includes('Can\'t reach database') || msg.includes('P1001') || msg.includes('P1017')) {
+      return errorResponse(
+        'Не удаётся подключиться к базе данных. Проверьте DATABASE_URL и доступность MySQL с сервера (Vercel).',
+        503,
+      )
+    }
     return errorResponse('Ошибка сервера', 500)
   }
 }
