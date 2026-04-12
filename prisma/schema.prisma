@@ -16,9 +16,10 @@ enum Role {
 }
 
 enum School {
-  VSP
-  MShZh
-  lox
+  ISE
+  SLA
+  ISJ
+  MLS
 }
 
 enum ChatType {

@@ -160,6 +160,16 @@ export const translations = {
     ru: 'Ошибка регистрации',
     en: 'Registration error',
   },
+  faculty: {
+    kz: 'Факультет',
+    ru: 'Факультет',
+    en: 'Faculty',
+  },
+  filterAll: {
+    kz: 'Барлығы',
+    ru: 'Все',
+    en: 'All',
+  },
 } as const
 
 export type TranslationKey = keyof typeof translations

@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { SCHOOL_OPTIONS } from '@/lib/schools'
+import { useLocale } from '@/components/layout/LocaleProvider'
+import { SCHOOL_OPTIONS, getSchoolLabel } from '@/lib/schools'
 
 type Post = {
   id: string
@@ -22,6 +23,7 @@ export default function FeedClient({
   posts: Post[]
   currentUserId: string
 }) {
+  const { locale, t } = useLocale()
   const router = useRouter()
   const [filter, setFilter] = useState<string>('ALL')
   const [showForm, setShowForm] = useState(false)
@@ -126,7 +128,7 @@ export default function FeedClient({
                 : 'border border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
             }`}
           >
-            {s === 'ALL' ? 'Все' : s}
+            {s === 'ALL' ? t('filterAll') : getSchoolLabel(s, locale)}
           </button>
         ))}
       </div>
@@ -152,7 +154,7 @@ export default function FeedClient({
                   {post.author.name} {post.author.surname}
                 </div>
                 <div className="text-xs text-gray-400">
-                  {post.author.school || 'Студент'} ·{' '}
+                  {getSchoolLabel(post.author.school, locale)} ·{' '}
                   {new Date(post.createdAt).toLocaleDateString('ru-RU')}
                 </div>
               </div>

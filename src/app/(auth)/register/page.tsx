@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Card } from '@/components/ui/Card'
 import { useLocale } from '@/components/layout/LocaleProvider'
-import { SCHOOL_OPTIONS } from '@/lib/schools'
+import { SCHOOL_OPTIONS, formatSchoolTrilingual } from '@/lib/schools'
 
 export default function RegisterPage() {
   const { t } = useLocale()
@@ -18,7 +18,7 @@ export default function RegisterPage() {
     name: '',
     surname: '',
     role: 'STUDENT',
-    school: 'VSP',
+    school: 'ISE',
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isLoading, setIsLoading] = useState(false)
@@ -127,7 +127,7 @@ export default function RegisterPage() {
             </select>
           </label>
           <label className="block">
-            <span className="mb-2 block text-sm font-medium text-gray-700">Факультет</span>
+            <span className="mb-2 block text-sm font-medium text-gray-700">{t('faculty')}</span>
             <select
               name="school"
               value={formData.school}
@@ -136,7 +136,7 @@ export default function RegisterPage() {
             >
               {SCHOOL_OPTIONS.map((s) => (
                 <option key={s} value={s}>
-                  {s}
+                  {formatSchoolTrilingual(s)}
                 </option>
               ))}
             </select>

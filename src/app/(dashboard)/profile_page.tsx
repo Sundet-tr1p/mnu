@@ -1,5 +1,6 @@
 import { getCurrentUser } from '@/lib/jwt'
 import prisma from '@/lib/db'
+import { formatSchoolTrilingual } from '@/lib/schools'
 
 export default async function ProfilePage() {
   const user = await getCurrentUser()
@@ -46,7 +47,7 @@ export default async function ProfilePage() {
           {profile.school && (
             <div className="flex gap-2">
               <span className="w-24 text-gray-400">School:</span>
-              <span className="text-gray-900">{profile.school}</span>
+              <span className="text-gray-900">{formatSchoolTrilingual(profile.school)}</span>
             </div>
           )}
           {profile.specialty && (

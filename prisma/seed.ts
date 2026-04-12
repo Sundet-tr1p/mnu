@@ -3,6 +3,8 @@ import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
+const FACULTY_IDS = ['ISE', 'SLA', 'ISJ', 'MLS'] as const
+
 async function main() {
   const password = await bcrypt.hash('password123', 12)
 
@@ -15,7 +17,7 @@ async function main() {
       name: 'Айбек',
       surname: 'Студент',
       role: Role.STUDENT,
-      school: 'VSP',
+      school: 'ISE',
       specialty: 'Право',
     },
   })
@@ -29,7 +31,7 @@ async function main() {
       name: 'Асан',
       surname: 'Профессор',
       role: Role.TEACHER,
-      school: 'MShZh',
+      school: 'SLA',
     },
   })
 
@@ -86,35 +88,17 @@ async function main() {
     },
   })
 
-  const vspChat = await prisma.chat.upsert({
-    where: { id: 'school-chat-VSP' },
-    update: {},
-    create: {
-      id: 'school-chat-VSP',
-      name: 'Факультет VSP',
-      type: ChatType.GLOBAL,
-    },
-  })
-
-  const mshzhChat = await prisma.chat.upsert({
-    where: { id: 'school-chat-MShZh' },
-    update: {},
-    create: {
-      id: 'school-chat-MShZh',
-      name: 'Факультет MShZh',
-      type: ChatType.GLOBAL,
-    },
-  })
-
-  const loxChat = await prisma.chat.upsert({
-    where: { id: 'school-chat-lox' },
-    update: {},
-    create: {
-      id: 'school-chat-lox',
-      name: 'Факультет lox',
-      type: ChatType.GLOBAL,
-    },
-  })
+  for (const fid of FACULTY_IDS) {
+    await prisma.chat.upsert({
+      where: { id: `school-chat-${fid}` },
+      update: {},
+      create: {
+        id: `school-chat-${fid}`,
+        name: `Факультет ${fid}`,
+        type: ChatType.GLOBAL,
+      },
+    })
+  }
 
   await prisma.chatMember.upsert({
     where: {
@@ -126,18 +110,18 @@ async function main() {
 
   await prisma.chatMember.upsert({
     where: {
-      chatId_userId: { chatId: vspChat.id, userId: student.id },
+      chatId_userId: { chatId: 'school-chat-ISE', userId: student.id },
     },
     update: {},
-    create: { chatId: vspChat.id, userId: student.id },
+    create: { chatId: 'school-chat-ISE', userId: student.id },
   })
 
   await prisma.chatMember.upsert({
     where: {
-      chatId_userId: { chatId: mshzhChat.id, userId: teacher.id },
+      chatId_userId: { chatId: 'school-chat-SLA', userId: teacher.id },
     },
     update: {},
-    create: { chatId: mshzhChat.id, userId: teacher.id },
+    create: { chatId: 'school-chat-SLA', userId: teacher.id },
   })
 
   await prisma.chatMember.upsert({
@@ -159,7 +143,7 @@ async function main() {
     },
   })
 
-  console.log('Seed OK: student + teacher + чат + пост')
+  console.log('Seed OK: student + teacher + чаты факультетов + пост')
 }
 
 main()
