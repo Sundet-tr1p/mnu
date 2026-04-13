@@ -170,7 +170,7 @@ model Survey {
 
 model Faq {
   id       String @id @default(cuid())
-  question String @db.VarChar(500)
+  question String @db.Text
   answer   String @db.Text
   order    Int    @default(0)
 

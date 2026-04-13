@@ -75,15 +75,15 @@ export const organizationCreateSchema = z.object({
 })
 
 export const faqCreateSchema = z.object({
-  question: z.string().min(3).max(500),
-  answer: z.string().min(3).max(5000),
+  question: z.string().min(1),
+  answer: z.string().min(1),
   order: z.number().int().min(0).optional(),
 })
 
 export const faqUpdateSchema = z.object({
   id: z.string().min(1),
-  question: z.string().min(3).max(500).optional(),
-  answer: z.string().min(3).max(5000).optional(),
+  question: z.string().min(1).optional(),
+  answer: z.string().min(1).optional(),
   order: z.number().int().min(0).optional(),
 })
 
