@@ -101,10 +101,10 @@ model Like {
 
 model Organization {
   id          String   @id @default(cuid())
-  name        String
-  description String
-  icon        String?
-  logoUrl     String?
+  name        String   @db.VarChar(200)
+  description String   @db.Text
+  icon        String?  @db.VarChar(32)
+  logoUrl     String?  @db.LongText
   createdAt   DateTime @default(now())
 
   @@map("organizations")
@@ -169,10 +169,10 @@ model Survey {
 }
 
 model Faq {
-  id       String  @id @default(cuid())
-  question String
-  answer   String
-  order    Int     @default(0)
+  id       String @id @default(cuid())
+  question String @db.VarChar(500)
+  answer   String @db.Text
+  order    Int    @default(0)
 
   @@map("faqs")
 }

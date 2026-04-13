@@ -64,7 +64,7 @@ export default function Sidebar({ user }: { user: JWTPayload }) {
               {user.role === 'STUDENT'
                 ? `📚 ${t('student')}`
                 : user.role === 'ADMIN'
-                  ? `🛡️ Admin`
+                  ? `🛡️ ${t('administrator')}`
                   : `👨‍🏫 ${t('teacher')}`}
             </div>
           </div>

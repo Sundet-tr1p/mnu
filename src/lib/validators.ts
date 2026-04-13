@@ -70,7 +70,7 @@ export const profileUpdateSchema = z.object({
 export const organizationCreateSchema = z.object({
   name: z.string().min(2, 'Название минимум 2 символа').max(120),
   description: z.string().min(5, 'Описание минимум 5 символов').max(2000),
-  icon: z.string().max(8).optional().nullable(),
+  icon: z.string().max(32).optional().nullable(),
   logoUrl: z.string().min(1).max(500).optional().nullable(),
 })
 

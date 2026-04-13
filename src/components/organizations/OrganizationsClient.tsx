@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { useLocale } from '@/components/layout/LocaleProvider'
 
 type Org = {
   id: string
@@ -12,8 +12,12 @@ type Org = {
   logoUrl?: string | null
 }
 
+function isDataUrl(src: string) {
+  return src.startsWith('data:')
+}
+
 export default function OrganizationsClient({ organizations }: { organizations: Org[] }) {
-  const router = useRouter()
+  const { t } = useLocale()
   const [items, setItems] = useState<Org[]>(organizations)
   const [showForm, setShowForm] = useState(false)
   const [name, setName] = useState('')
@@ -65,7 +69,7 @@ export default function OrganizationsClient({ organizations }: { organizations: 
       })
       const data = await res.json()
       if (!res.ok) {
-        setError(data.error || 'Ошибка создания')
+        setError(data.error || t('createFailed'))
         return
       }
       setName('')
@@ -75,7 +79,7 @@ export default function OrganizationsClient({ organizations }: { organizations: 
       setShowForm(false)
       // new organization will arrive via SSE
     } catch {
-      setError('Ошибка сети')
+      setError(t('networkErrorShort'))
     } finally {
       setSubmitting(false)
     }
@@ -91,12 +95,12 @@ export default function OrganizationsClient({ organizations }: { organizations: 
       const res = await fetch('/api/uploads/org-logo', { method: 'POST', body: form })
       const data = await res.json()
       if (!res.ok) {
-        setError(data.error || 'Ошибка загрузки')
+        setError(data.error || t('uploadFailed'))
         return
       }
       setLogoUrl(String(data.url || ''))
     } catch {
-      setError('Ошибка сети при загрузке')
+      setError(t('uploadFailed'))
     } finally {
       setUploadingLogo(false)
     }
@@ -105,13 +109,13 @@ export default function OrganizationsClient({ organizations }: { organizations: 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Организации</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{t('orgPageTitle')}</h1>
         <button
           type="button"
           onClick={() => setShowForm((v) => !v)}
           className="rounded-xl bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
         >
-          {showForm ? 'Закрыть' : 'Открыть сообщество'}
+          {showForm ? t('closeForm') : t('openCommunity')}
         </button>
       </div>
 
@@ -121,18 +125,18 @@ export default function OrganizationsClient({ organizations }: { organizations: 
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Название сообщества"
+            placeholder={t('communityName')}
             className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
             required
           />
           <input
             value={icon}
             onChange={(e) => setIcon(e.target.value)}
-            placeholder="Иконка (например: 🧑‍⚖️)"
+            placeholder={t('iconEmoji')}
             className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
           />
           <div className="rounded-xl border border-gray-200 p-3">
-            <div className="mb-2 text-sm font-medium text-gray-700">Логотип (изображение)</div>
+            <div className="mb-2 text-sm font-medium text-gray-700">{t('logoUpload')}</div>
             <div className="flex items-center gap-3">
               <input
                 type="file"
@@ -140,19 +144,25 @@ export default function OrganizationsClient({ organizations }: { organizations: 
                 onChange={(e) => onPickLogo(e.target.files?.[0] || null)}
                 className="block w-full text-sm"
               />
-              {uploadingLogo && <span className="text-xs text-gray-500">Загрузка...</span>}
+              {uploadingLogo && <span className="text-xs text-gray-500">{t('uploading')}</span>}
             </div>
             {logoUrl && (
               <div className="mt-3 flex items-center gap-3">
                 <div className="relative h-12 w-12 overflow-hidden rounded-xl border border-gray-200 bg-white">
-                  <Image src={logoUrl} alt="logo preview" fill className="object-cover" />
+                  <Image
+                    src={logoUrl}
+                    alt="logo preview"
+                    fill
+                    className="object-cover"
+                    unoptimized={isDataUrl(logoUrl)}
+                  />
                 </div>
                 <button
                   type="button"
                   onClick={() => setLogoUrl('')}
                   className="rounded-lg bg-gray-100 px-3 py-2 text-xs text-gray-700 hover:bg-gray-200"
                 >
-                  Убрать
+                  {t('remove')}
                 </button>
               </div>
             )}
@@ -160,8 +170,8 @@ export default function OrganizationsClient({ organizations }: { organizations: 
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Описание"
-            rows={3}
+            placeholder={t('description')}
+            rows={6}
             className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
             required
           />
@@ -171,7 +181,7 @@ export default function OrganizationsClient({ organizations }: { organizations: 
               disabled={submitting || uploadingLogo}
               className="rounded-xl bg-emerald-600 px-4 py-2 text-sm text-white hover:bg-emerald-700 disabled:opacity-50"
             >
-              {submitting ? 'Сохранение...' : 'Создать'}
+              {submitting ? t('saving') : t('create')}
             </button>
           </div>
         </form>
@@ -179,7 +189,7 @@ export default function OrganizationsClient({ organizations }: { organizations: 
 
       {items.length === 0 ? (
         <div className="py-12 text-center text-gray-400">
-          <p>Организаций пока нет</p>
+          <p>{t('noOrgsYet')}</p>
         </div>
       ) : (
         <div className="grid gap-4">
@@ -188,7 +198,13 @@ export default function OrganizationsClient({ organizations }: { organizations: 
               <div className="mb-2 flex items-center gap-3">
                 {org.logoUrl ? (
                   <div className="relative h-10 w-10 overflow-hidden rounded-xl border border-gray-200 bg-white">
-                    <Image src={org.logoUrl} alt={org.name} fill className="object-cover" />
+                    <Image
+                      src={org.logoUrl}
+                      alt={org.name}
+                      fill
+                      className="object-cover"
+                      unoptimized={isDataUrl(org.logoUrl)}
+                    />
                   </div>
                 ) : (
                   <span className="text-2xl">{org.icon || '🏛️'}</span>

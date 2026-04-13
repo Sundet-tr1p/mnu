@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import { useLocale } from '@/components/layout/LocaleProvider'
+import { dateLocaleTag } from '@/lib/i18n'
 
 type Survey = {
   id: string
@@ -16,6 +18,7 @@ export default function SurveysClient({
   initialSurveys: Survey[]
   canEdit: boolean
 }) {
+  const { t } = useLocale()
   const [surveys, setSurveys] = useState<Survey[]>(initialSurveys)
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
@@ -34,14 +37,14 @@ export default function SurveysClient({
       })
       const data = await res.json()
       if (!res.ok) {
-        setError(data.error || 'Ошибка сохранения')
+        setError(data.error || t('saveError'))
         return
       }
       setSurveys((prev) => [data.survey as Survey, ...prev])
       setTitle('')
       setLink('')
     } catch {
-      setError('Ошибка сети')
+      setError(t('networkErrorShort'))
     } finally {
       setSaving(false)
     }
@@ -58,13 +61,13 @@ export default function SurveysClient({
       })
       const data = await res.json()
       if (!res.ok) {
-        setError(data.error || 'Ошибка сохранения')
+        setError(data.error || t('saveError'))
         return
       }
       const updated = data.survey as Survey
       setSurveys((prev) => prev.map((s) => (s.id === updated.id ? updated : s)))
     } catch {
-      setError('Ошибка сети')
+      setError(t('networkErrorShort'))
     } finally {
       setSaving(false)
     }
@@ -72,22 +75,22 @@ export default function SurveysClient({
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">Опросы</h1>
+      <h1 className="mb-6 text-2xl font-bold text-gray-900">{t('surveysPageTitle')}</h1>
 
       {canEdit && (
         <div className="mb-6 space-y-3 rounded-2xl border border-gray-200 bg-white p-4">
-          <div className="text-sm font-semibold text-gray-900">Добавить опрос</div>
+          <div className="text-sm font-semibold text-gray-900">{t('surveyAdd')}</div>
           {error && <p className="rounded-lg bg-red-50 p-2 text-sm text-red-600">{error}</p>}
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Название"
+            placeholder={t('surveyName')}
             className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
           />
           <input
             value={link}
             onChange={(e) => setLink(e.target.value)}
-            placeholder="Ссылка (https://...)"
+            placeholder={t('surveyLink')}
             className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
           />
           <div className="flex justify-end">
@@ -97,7 +100,7 @@ export default function SurveysClient({
               disabled={saving || !title.trim() || !link.trim()}
               className="rounded-xl bg-emerald-600 px-4 py-2 text-sm text-white hover:bg-emerald-700 disabled:opacity-50"
             >
-              {saving ? 'Сохранение...' : 'Создать'}
+              {saving ? t('saving') : t('create')}
             </button>
           </div>
         </div>
@@ -105,7 +108,7 @@ export default function SurveysClient({
 
       {surveys.length === 0 ? (
         <div className="py-12 text-center text-gray-400">
-          <p>Опросов пока нет</p>
+          <p>{t('noSurveysYet')}</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -135,6 +138,8 @@ function SurveyItem({
   saving: boolean
   onUpdate: (id: string, patch: Partial<{ title: string; link: string }>) => Promise<void>
 }) {
+  const { t, locale } = useLocale()
+  const dateTag = dateLocaleTag(locale)
   const [editing, setEditing] = useState(false)
   const [title, setTitle] = useState(survey.title)
   const [link, setLink] = useState(survey.link)
@@ -161,7 +166,7 @@ function SurveyItem({
                   onClick={() => setEditing(false)}
                   className="rounded-xl bg-gray-100 px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
                 >
-                  Отмена
+                  {t('cancel')}
                 </button>
                 <button
                   type="button"
@@ -172,7 +177,7 @@ function SurveyItem({
                   }}
                   className="rounded-xl bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
                 >
-                  {saving ? 'Сохранение...' : 'Сохранить'}
+                  {saving ? t('saving') : t('save')}
                 </button>
               </div>
             </div>
@@ -188,7 +193,7 @@ function SurveyItem({
                 {survey.link}
               </a>
               <p className="mt-2 text-xs text-gray-400">
-                {new Date(survey.createdAt).toLocaleDateString('ru-RU')}
+                {new Date(survey.createdAt).toLocaleDateString(dateTag)}
               </p>
             </>
           )}
@@ -202,7 +207,7 @@ function SurveyItem({
               rel="noopener noreferrer"
               className="rounded-xl bg-blue-50 px-3 py-2 text-sm text-blue-700 hover:bg-blue-100"
             >
-              Открыть →
+              {t('surveyOpen')}
             </a>
           )}
           {canEdit && !editing && (
@@ -211,7 +216,7 @@ function SurveyItem({
               onClick={() => setEditing(true)}
               className="rounded-xl bg-gray-100 px-3 py-2 text-sm text-gray-700 hover:bg-gray-200"
             >
-              Редактировать
+              {t('edit')}
             </button>
           )}
         </div>

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useLocale } from '@/components/layout/LocaleProvider'
+import { dateLocaleTag } from '@/lib/i18n'
 import { SCHOOL_OPTIONS, getSchoolLabel } from '@/lib/schools'
 
 type Post = {
@@ -28,6 +29,7 @@ export default function FeedClient({ posts }: { posts: Post[] }) {
   const schools = ['ALL', ...SCHOOL_OPTIONS] as const
 
   const filtered = filter === 'ALL' ? posts : posts.filter((p) => p.author.school === filter)
+  const dateTag = dateLocaleTag(locale)
 
   async function handlePost(e: React.FormEvent) {
     e.preventDefault()
@@ -53,13 +55,13 @@ export default function FeedClient({ posts }: { posts: Post[] }) {
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Лента</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{t('feedTitle')}</h1>
         <button
           type="button"
           onClick={() => router.refresh()}
           className="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2 text-sm transition hover:bg-gray-50"
         >
-          Обновить
+          {t('refresh')}
         </button>
       </div>
 
@@ -70,20 +72,20 @@ export default function FeedClient({ posts }: { posts: Post[] }) {
             onClick={() => setShowForm(true)}
             className="w-full rounded-xl bg-gray-50 px-4 py-3 text-left text-sm text-gray-400 transition hover:bg-gray-100"
           >
-            Написать пост…
+            {t('writePost')}
           </button>
         ) : (
           <form onSubmit={handlePost} className="space-y-3">
             <input
               type="text"
-              placeholder="Заголовок"
+              placeholder={t('postTitle')}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
             <textarea
-              placeholder="Текст"
+              placeholder={t('postBody')}
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows={3}
@@ -96,14 +98,14 @@ export default function FeedClient({ posts }: { posts: Post[] }) {
                 onClick={() => setShowForm(false)}
                 className="rounded-xl px-4 py-2 text-sm text-gray-600 transition hover:bg-gray-100"
               >
-                Отмена
+                {t('cancel')}
               </button>
               <button
                 type="submit"
                 disabled={isPosting}
                 className="rounded-xl bg-blue-600 px-4 py-2 text-sm text-white transition hover:bg-blue-700 disabled:opacity-50"
               >
-                {isPosting ? 'Публикация…' : 'Опубликовать'}
+                {isPosting ? t('publishing') : t('publish')}
               </button>
             </div>
           </form>
@@ -130,7 +132,7 @@ export default function FeedClient({ posts }: { posts: Post[] }) {
       <div className="space-y-4">
         {filtered.length === 0 && (
           <div className="py-12 text-center text-gray-400">
-            <p>Постов пока нет</p>
+            <p>{t('noPostsYet')}</p>
           </div>
         )}
         {filtered.map((post) => (
@@ -146,7 +148,7 @@ export default function FeedClient({ posts }: { posts: Post[] }) {
                 </div>
                 <div className="text-xs text-gray-400">
                   {getSchoolLabel(post.author.school, locale)} ·{' '}
-                  {new Date(post.createdAt).toLocaleDateString('ru-RU')}
+                  {new Date(post.createdAt).toLocaleDateString(dateTag)}
                 </div>
               </div>
             </div>

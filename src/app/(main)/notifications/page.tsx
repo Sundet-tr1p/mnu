@@ -2,11 +2,15 @@ import { redirect } from 'next/navigation'
 import { getCurrentUser } from '@/lib/jwt'
 import prisma from '@/lib/db'
 import { IMPORTANT_NOTIFICATION_TYPES } from '@/lib/notify-important'
+import type { Locale } from '@/lib/i18n'
+import { dateLocaleTag } from '@/lib/i18n'
+import { getServerLocale, st } from '@/lib/i18n-server'
 
-const typeLabels: Record<string, string> = {
-  NEW_ORGANIZATION: 'Новое сообщество',
-  FAQ_UPDATED: 'Обновление FAQ',
-  SURVEY_UPDATED: 'Опросы',
+function importantTypeFallback(locale: Locale, type: string): string {
+  if (type === 'NEW_ORGANIZATION') return st(locale, 'notifTypeNewOrganization')
+  if (type === 'FAQ_UPDATED') return st(locale, 'notifTypeFaqUpdated')
+  if (type === 'SURVEY_UPDATED') return st(locale, 'notifTypeSurveyUpdated')
+  return type
 }
 
 function parsePayload(data: string | null): { title?: string; detail?: string } {
@@ -20,6 +24,8 @@ function parsePayload(data: string | null): { title?: string; detail?: string } 
 }
 
 export default async function NotificationsPage() {
+  const locale = getServerLocale()
+  const dateTag = dateLocaleTag(locale)
   const user = await getCurrentUser()
   if (!user) redirect('/login')
 
@@ -33,10 +39,10 @@ export default async function NotificationsPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">Уведомления</h1>
+      <h1 className="mb-6 text-2xl font-bold text-gray-900">{st(locale, 'notificationsPageTitle')}</h1>
       {notifications.length === 0 ? (
         <div className="py-12 text-center text-gray-400">
-          <p>Уведомлений пока нет</p>
+          <p>{st(locale, 'noNotificationsYet')}</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -50,13 +56,13 @@ export default async function NotificationsPage() {
                 }`}
               >
                 <div className="text-sm font-medium text-gray-900">
-                  {parsed.title || typeLabels[n.type] || n.type}
+                  {parsed.title || importantTypeFallback(locale, n.type)}
                 </div>
                 {parsed.detail && (
                   <p className="mt-1 text-xs text-gray-600">{parsed.detail}</p>
                 )}
                 <p className="mt-1 text-xs text-gray-400">
-                  {new Date(n.createdAt).toLocaleString('ru-RU')}
+                  {new Date(n.createdAt).toLocaleString(dateTag)}
                 </p>
               </div>
             )

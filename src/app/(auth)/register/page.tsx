@@ -115,15 +115,15 @@ export default function RegisterPage() {
         />
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <label className="block">
-            <span className="mb-2 block text-sm font-medium text-gray-700">Роль</span>
+            <span className="mb-2 block text-sm font-medium text-gray-700">{t('role')}</span>
             <select
               name="role"
               value={formData.role}
               onChange={(e) => setFormData((prev) => ({ ...prev, role: e.target.value }))}
               className="w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm"
             >
-              <option value="STUDENT">Студент</option>
-              <option value="TEACHER">Преподаватель</option>
+              <option value="STUDENT">{t('student')}</option>
+              <option value="TEACHER">{t('teacher')}</option>
             </select>
           </label>
           <label className="block">
