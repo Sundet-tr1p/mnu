@@ -12,6 +12,15 @@
     --shadow: 15 23 42; /* slate-900 */
   }
 
+  html.dark {
+    --bg: 2 6 23; /* slate-950 */
+    --panel: 15 23 42; /* slate-900 */
+    --ink: 226 232 240; /* slate-200 */
+    --muted: 148 163 184; /* slate-400 */
+    --ring: 99 102 241; /* indigo-500 */
+    --shadow: 0 0 0;
+  }
+
   * {
     box-sizing: border-box;
   }
@@ -59,6 +68,15 @@
     rgb(var(--bg));
 }
 
+.dark .app-background {
+  background:
+    radial-gradient(900px 420px at -10% -10%, rgba(99, 102, 241, 0.22), transparent 55%),
+    radial-gradient(820px 380px at 110% 110%, rgba(59, 130, 246, 0.14), transparent 55%),
+    radial-gradient(600px 280px at 50% -10%, rgba(16, 185, 129, 0.10), transparent 60%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0)) ,
+    rgb(var(--bg));
+}
+
 .glass-panel {
   background: rgba(255, 255, 255, 0.78);
   border: 1px solid rgba(15, 23, 42, 0.06);
@@ -66,6 +84,14 @@
     0 10px 30px rgba(var(--shadow), 0.08),
     0 1px 0 rgba(255, 255, 255, 0.6) inset;
   backdrop-filter: blur(12px) saturate(1.2);
+}
+
+.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.66);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.45),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
 }
 
 .animate-fade-in {
