@@ -107,48 +107,54 @@ export default function OrganizationsClient({ organizations }: { organizations: 
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-8">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">{t('orgPageTitle')}</h1>
+    <div className="mx-auto max-w-2xl px-4 py-6 sm:py-8">
+      <div className="mb-5 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-slate-100">{t('orgPageTitle')}</h1>
+          <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">{items.length}</p>
+        </div>
         <button
           type="button"
           onClick={() => setShowForm((v) => !v)}
-          className="rounded-xl bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+          className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-blue-600/15 transition hover:-translate-y-0.5 hover:shadow-md hover:shadow-blue-600/20 hover:from-blue-700 hover:to-indigo-700 dark:from-indigo-600 dark:to-blue-600"
         >
           {showForm ? t('closeForm') : t('openCommunity')}
         </button>
       </div>
 
       {showForm && (
-        <form onSubmit={onSubmit} className="mb-5 space-y-3 rounded-2xl border border-gray-200 bg-white p-4">
-          {error && <p className="rounded-lg bg-red-50 p-2 text-sm text-red-600">{error}</p>}
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder={t('communityName')}
-            className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
-            required
-          />
-          <input
-            value={icon}
-            onChange={(e) => setIcon(e.target.value)}
-            placeholder={t('iconEmoji')}
-            className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
-          />
+        <div className="fx-border mb-5 rounded-2xl">
+          <form onSubmit={onSubmit} className="fx-card space-y-3 rounded-2xl p-4">
+            {error && <p className="rounded-xl bg-red-50 p-2 text-sm text-red-600 dark:bg-red-500/10 dark:text-red-200">{error}</p>}
+            <div className="grid gap-3 sm:grid-cols-2">
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder={t('communityName')}
+                className="w-full rounded-xl border border-gray-200/70 bg-white/70 px-3 py-2 text-sm shadow-sm backdrop-blur transition focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100"
+                required
+              />
+              <input
+                value={icon}
+                onChange={(e) => setIcon(e.target.value)}
+                placeholder={t('iconEmoji')}
+                className="w-full rounded-xl border border-gray-200/70 bg-white/70 px-3 py-2 text-sm shadow-sm backdrop-blur transition focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100"
+              />
+            </div>
           <div className="rounded-xl border border-gray-200 p-3">
-            <div className="mb-2 text-sm font-medium text-gray-700">{t('logoUpload')}</div>
-            <div className="flex items-center gap-3">
+            <div className="mb-2 text-sm font-medium text-gray-700 dark:text-slate-200">{t('logoUpload')}</div>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
               <input
                 type="file"
                 accept="image/*"
                 onChange={(e) => onPickLogo(e.target.files?.[0] || null)}
-                className="block w-full text-sm"
+                className="block w-full text-sm text-gray-700 file:mr-3 file:rounded-lg file:border-0 file:bg-gray-100 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-gray-800 hover:file:bg-gray-200 dark:text-slate-200 dark:file:bg-white/10 dark:file:text-slate-100 dark:hover:file:bg-white/15"
               />
               {uploadingLogo && <span className="text-xs text-gray-500">{t('uploading')}</span>}
             </div>
             {logoUrl && (
               <div className="mt-3 flex items-center gap-3">
-                <div className="relative h-12 w-12 overflow-hidden rounded-xl border border-gray-200 bg-white">
+                <div className="relative h-12 w-12 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm ring-1 ring-black/5 dark:border-slate-700/50 dark:bg-slate-950/40 dark:ring-white/10">
                   <Image
                     src={logoUrl}
                     alt="logo preview"
@@ -160,7 +166,7 @@ export default function OrganizationsClient({ organizations }: { organizations: 
                 <button
                   type="button"
                   onClick={() => setLogoUrl('')}
-                  className="rounded-lg bg-gray-100 px-3 py-2 text-xs text-gray-700 hover:bg-gray-200"
+                  className="rounded-xl border border-gray-200/70 bg-white/70 px-3 py-2 text-xs font-medium text-gray-800 shadow-sm backdrop-blur transition hover:bg-white dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100 dark:hover:bg-slate-950/60"
                 >
                   {t('remove')}
                 </button>
@@ -172,32 +178,34 @@ export default function OrganizationsClient({ organizations }: { organizations: 
             onChange={(e) => setDescription(e.target.value)}
             placeholder={t('description')}
             rows={6}
-            className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
+            className="w-full rounded-xl border border-gray-200/70 bg-white/70 px-3 py-2 text-sm shadow-sm backdrop-blur transition focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100"
             required
           />
           <div className="flex justify-end">
             <button
               type="submit"
               disabled={submitting || uploadingLogo}
-              className="rounded-xl bg-emerald-600 px-4 py-2 text-sm text-white hover:bg-emerald-700 disabled:opacity-50"
+              className="rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md disabled:opacity-50"
             >
               {submitting ? t('saving') : t('create')}
             </button>
           </div>
-        </form>
+          </form>
+        </div>
       )}
 
       {items.length === 0 ? (
-        <div className="py-12 text-center text-gray-400">
+        <div className="py-12 text-center text-gray-400 dark:text-slate-500">
           <p>{t('noOrgsYet')}</p>
         </div>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-4 sm:grid-cols-2">
           {items.map((org) => (
-            <div key={org.id} className="rounded-2xl border border-gray-200 bg-white p-5">
+            <div key={org.id} className="fx-border rounded-2xl">
+              <div className="fx-card h-full rounded-2xl p-5">
               <div className="mb-2 flex items-center gap-3">
                 {org.logoUrl ? (
-                  <div className="relative h-10 w-10 overflow-hidden rounded-xl border border-gray-200 bg-white">
+                  <div className="relative h-10 w-10 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm ring-1 ring-black/5 dark:border-slate-700/50 dark:bg-slate-950/40 dark:ring-white/10">
                     <Image
                       src={org.logoUrl}
                       alt={org.name}
@@ -209,9 +217,10 @@ export default function OrganizationsClient({ organizations }: { organizations: 
                 ) : (
                   <span className="text-2xl">{org.icon || '🏛️'}</span>
                 )}
-                <h2 className="font-semibold text-gray-900">{org.name}</h2>
+                <h2 className="font-semibold text-gray-900 dark:text-slate-100">{org.name}</h2>
               </div>
-              <p className="text-sm text-gray-500">{org.description}</p>
+              <p className="whitespace-pre-wrap text-sm text-gray-600 dark:text-slate-300">{org.description}</p>
+              </div>
             </div>
           ))}
         </div>

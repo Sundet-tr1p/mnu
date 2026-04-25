@@ -124,6 +124,80 @@
 }
 
 @layer utilities {
+  .fx-card {
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow:
+      0 10px 30px rgba(15, 23, 42, 0.06),
+      0 1px 0 rgba(255, 255, 255, 0.7) inset;
+    backdrop-filter: blur(12px) saturate(1.2);
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      border-color 180ms ease,
+      background-color 180ms ease;
+  }
+
+  .fx-card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 18px 45px rgba(15, 23, 42, 0.10),
+      0 1px 0 rgba(255, 255, 255, 0.8) inset;
+    border-color: rgba(59, 130, 246, 0.22);
+  }
+
+  .dark .fx-card {
+    border-color: rgba(148, 163, 184, 0.14);
+    background: rgba(15, 23, 42, 0.64);
+    box-shadow:
+      0 18px 50px rgba(0, 0, 0, 0.45),
+      0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  }
+
+  .dark .fx-card:hover {
+    border-color: rgba(99, 102, 241, 0.35);
+    box-shadow:
+      0 26px 70px rgba(0, 0, 0, 0.55),
+      0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  }
+
+  .fx-border {
+    position: relative;
+  }
+
+  .fx-border::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 1rem;
+    background: linear-gradient(
+      90deg,
+      rgba(59, 130, 246, 0.35),
+      rgba(99, 102, 241, 0.25),
+      rgba(16, 185, 129, 0.18)
+    );
+    filter: blur(10px);
+    opacity: 0;
+    transition: opacity 200ms ease;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .fx-border:hover::before {
+    opacity: 1;
+  }
+
+  .fx-shimmer {
+    background: linear-gradient(
+      110deg,
+      rgba(148, 163, 184, 0.18) 8%,
+      rgba(148, 163, 184, 0.32) 18%,
+      rgba(148, 163, 184, 0.18) 33%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s linear infinite;
+  }
+
   .subtle-scrollbar {
     scrollbar-width: thin;
     scrollbar-color: rgba(100, 116, 139, 0.35) transparent;

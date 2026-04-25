@@ -74,40 +74,46 @@ export default function SurveysClient({
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">{t('surveysPageTitle')}</h1>
+    <div className="mx-auto max-w-2xl px-4 py-6 sm:py-8">
+      <h1 className="mb-6 text-2xl font-bold text-gray-900 dark:text-slate-100">{t('surveysPageTitle')}</h1>
 
       {canEdit && (
-        <div className="mb-6 space-y-3 rounded-2xl border border-gray-200 bg-white p-4">
-          <div className="text-sm font-semibold text-gray-900">{t('surveyAdd')}</div>
-          {error && <p className="rounded-lg bg-red-50 p-2 text-sm text-red-600">{error}</p>}
+        <div className="fx-border mb-6 rounded-2xl">
+          <div className="fx-card space-y-3 rounded-2xl p-4">
+          <div className="text-sm font-semibold text-gray-900 dark:text-slate-100">{t('surveyAdd')}</div>
+          {error && (
+            <p className="rounded-xl bg-red-50 p-2 text-sm text-red-600 dark:bg-red-500/10 dark:text-red-200">
+              {error}
+            </p>
+          )}
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder={t('surveyName')}
-            className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
+            className="w-full rounded-xl border border-gray-200/70 bg-white/70 px-3 py-2 text-sm shadow-sm backdrop-blur transition focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100"
           />
           <input
             value={link}
             onChange={(e) => setLink(e.target.value)}
             placeholder={t('surveyLink')}
-            className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
+            className="w-full rounded-xl border border-gray-200/70 bg-white/70 px-3 py-2 text-sm shadow-sm backdrop-blur transition focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100"
           />
           <div className="flex justify-end">
             <button
               type="button"
               onClick={createSurvey}
               disabled={saving || !title.trim() || !link.trim()}
-              className="rounded-xl bg-emerald-600 px-4 py-2 text-sm text-white hover:bg-emerald-700 disabled:opacity-50"
+              className="rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md disabled:opacity-50"
             >
               {saving ? t('saving') : t('create')}
             </button>
+          </div>
           </div>
         </div>
       )}
 
       {surveys.length === 0 ? (
-        <div className="py-12 text-center text-gray-400">
+        <div className="py-12 text-center text-gray-400 dark:text-slate-500">
           <p>{t('noSurveysYet')}</p>
         </div>
       ) : (
@@ -145,7 +151,8 @@ function SurveyItem({
   const [link, setLink] = useState(survey.link)
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5">
+    <div className="fx-border rounded-2xl">
+      <div className="fx-card rounded-2xl p-5">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
           {editing ? (
@@ -153,18 +160,18 @@ function SurveyItem({
               <input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
+                className="w-full rounded-xl border border-gray-200/70 bg-white/70 px-3 py-2 text-sm shadow-sm backdrop-blur transition focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100"
               />
               <input
                 value={link}
                 onChange={(e) => setLink(e.target.value)}
-                className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
+                className="w-full rounded-xl border border-gray-200/70 bg-white/70 px-3 py-2 text-sm shadow-sm backdrop-blur transition focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100"
               />
               <div className="flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setEditing(false)}
-                  className="rounded-xl bg-gray-100 px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+                  className="rounded-xl border border-gray-200/70 bg-white/70 px-4 py-2 text-sm font-medium text-gray-800 shadow-sm backdrop-blur transition hover:bg-white dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100 dark:hover:bg-slate-950/60"
                 >
                   {t('cancel')}
                 </button>
@@ -175,7 +182,7 @@ function SurveyItem({
                     await onUpdate(survey.id, { title, link })
                     setEditing(false)
                   }}
-                  className="rounded-xl bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
+                  className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md disabled:opacity-50"
                 >
                   {saving ? t('saving') : t('save')}
                 </button>
@@ -183,16 +190,16 @@ function SurveyItem({
             </div>
           ) : (
             <>
-              <h2 className="truncate font-semibold text-gray-900">{survey.title}</h2>
+              <h2 className="truncate font-semibold text-gray-900 dark:text-slate-100">{survey.title}</h2>
               <a
                 href={survey.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-2 inline-block break-all text-sm text-blue-600 hover:underline"
+                className="mt-2 inline-block break-all text-sm text-blue-700 hover:underline dark:text-indigo-200"
               >
                 {survey.link}
               </a>
-              <p className="mt-2 text-xs text-gray-400">
+              <p className="mt-2 text-xs text-gray-400 dark:text-slate-500">
                 {new Date(survey.createdAt).toLocaleDateString(dateTag)}
               </p>
             </>
@@ -205,7 +212,7 @@ function SurveyItem({
               href={survey.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-xl bg-blue-50 px-3 py-2 text-sm text-blue-700 hover:bg-blue-100"
+              className="rounded-xl bg-blue-50 px-3 py-2 text-sm font-medium text-blue-700 transition hover:bg-blue-100 dark:bg-indigo-500/15 dark:text-indigo-200 dark:hover:bg-indigo-500/20"
             >
               {t('surveyOpen')}
             </a>
@@ -214,12 +221,13 @@ function SurveyItem({
             <button
               type="button"
               onClick={() => setEditing(true)}
-              className="rounded-xl bg-gray-100 px-3 py-2 text-sm text-gray-700 hover:bg-gray-200"
+              className="rounded-xl border border-gray-200/70 bg-white/70 px-3 py-2 text-sm font-medium text-gray-800 shadow-sm backdrop-blur transition hover:bg-white dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100 dark:hover:bg-slate-950/60"
             >
               {t('edit')}
             </button>
           )}
         </div>
+      </div>
       </div>
     </div>
   )

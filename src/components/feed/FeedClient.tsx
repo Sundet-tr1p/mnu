@@ -53,24 +53,30 @@ export default function FeedClient({ posts }: { posts: Post[] }) {
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-8">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">{t('feedTitle')}</h1>
+    <div className="mx-auto max-w-2xl px-4 py-6 sm:py-8">
+      <div className="mb-5 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-slate-100">{t('feedTitle')}</h1>
+          <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
+            {posts.length} • {t('filterAll')}
+          </p>
+        </div>
         <button
           type="button"
           onClick={() => router.refresh()}
-          className="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2 text-sm transition hover:bg-gray-50"
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200/70 bg-white/70 px-4 py-2 text-sm font-medium text-gray-800 shadow-sm backdrop-blur transition hover:bg-white dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100 dark:hover:bg-slate-950/60"
         >
-          {t('refresh')}
+          <span aria-hidden="true">⟲</span> {t('refresh')}
         </button>
       </div>
 
-      <div className="mb-4 rounded-2xl border border-gray-200 bg-white p-4">
+      <div className="fx-border mb-4 rounded-2xl">
+        <div className="fx-card rounded-2xl p-4">
         {!showForm ? (
           <button
             type="button"
             onClick={() => setShowForm(true)}
-            className="w-full rounded-xl bg-gray-50 px-4 py-3 text-left text-sm text-gray-400 transition hover:bg-gray-100"
+            className="w-full rounded-xl bg-gray-50/80 px-4 py-3 text-left text-sm text-gray-500 transition hover:bg-gray-100 dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/8"
           >
             {t('writePost')}
           </button>
@@ -81,38 +87,39 @@ export default function FeedClient({ posts }: { posts: Post[] }) {
               placeholder={t('postTitle')}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-xl border border-gray-200/70 bg-white/70 px-4 py-2 text-sm shadow-sm backdrop-blur transition focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100"
               required
             />
             <textarea
               placeholder={t('postBody')}
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              rows={3}
-              className="w-full resize-none rounded-xl border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              rows={4}
+              className="w-full resize-none rounded-xl border border-gray-200/70 bg-white/70 px-4 py-2 text-sm shadow-sm backdrop-blur transition focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100"
               required
             />
             <div className="flex justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="rounded-xl px-4 py-2 text-sm text-gray-600 transition hover:bg-gray-100"
+                className="rounded-xl px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-white/5"
               >
                 {t('cancel')}
               </button>
               <button
                 type="submit"
                 disabled={isPosting}
-                className="rounded-xl bg-blue-600 px-4 py-2 text-sm text-white transition hover:bg-blue-700 disabled:opacity-50"
+                className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-blue-600/15 transition hover:-translate-y-0.5 hover:shadow-md hover:shadow-blue-600/20 hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 dark:from-indigo-600 dark:to-blue-600"
               >
                 {isPosting ? t('publishing') : t('publish')}
               </button>
             </div>
           </form>
         )}
+        </div>
       </div>
 
-      <div className="mb-6 flex gap-2">
+      <div className="subtle-scrollbar -mx-1 mb-6 flex gap-2 overflow-x-auto px-1 pb-1">
         {schools.map((s) => (
           <button
             key={s}
@@ -120,8 +127,8 @@ export default function FeedClient({ posts }: { posts: Post[] }) {
             onClick={() => setFilter(s)}
             className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
               filter === s
-                ? 'bg-blue-600 text-white'
-                : 'border border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
+                ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/15'
+                : 'border border-gray-200/70 bg-white/70 text-gray-700 shadow-sm backdrop-blur hover:bg-white dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-200 dark:hover:bg-slate-950/60'
             }`}
           >
             {s === 'ALL' ? t('filterAll') : getSchoolLabel(s, locale)}
@@ -131,30 +138,35 @@ export default function FeedClient({ posts }: { posts: Post[] }) {
 
       <div className="space-y-4">
         {filtered.length === 0 && (
-          <div className="py-12 text-center text-gray-400">
+          <div className="py-12 text-center text-gray-400 dark:text-slate-500">
             <p>{t('noPostsYet')}</p>
           </div>
         )}
         {filtered.map((post) => (
-          <div key={post.id} className="rounded-2xl border border-gray-200 bg-white p-5">
+          <div key={post.id} className="fx-border rounded-2xl">
+            <div className="fx-card rounded-2xl p-5">
             <div className="mb-3 flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-500 text-sm font-bold text-white">
                 {post.author.name[0]}
                 {post.author.surname[0]}
               </div>
               <div>
-                <div className="text-sm font-semibold text-gray-900">
+                <div className="text-sm font-semibold text-gray-900 dark:text-slate-100">
                   {post.author.name} {post.author.surname}
                 </div>
-                <div className="text-xs text-gray-400">
+                <div className="text-xs text-gray-400 dark:text-slate-500">
                   {getSchoolLabel(post.author.school, locale)} ·{' '}
                   {new Date(post.createdAt).toLocaleDateString(dateTag)}
                 </div>
               </div>
             </div>
 
-            <h2 className="mb-1 font-semibold text-gray-900">{post.title}</h2>
-            <p className="mb-4 text-sm text-gray-600">{post.content}</p>
+            <h2 className="mb-1 text-base font-semibold text-gray-900 dark:text-slate-100 sm:text-[15px]">
+              {post.title}
+            </h2>
+            <p className="mb-4 whitespace-pre-wrap text-sm text-gray-600 dark:text-slate-300">
+              {post.content}
+            </p>
 
             <div className="flex items-center gap-4 border-t border-gray-100 pt-3">
               <button
@@ -166,7 +178,7 @@ export default function FeedClient({ posts }: { posts: Post[] }) {
               >
                 {post.likes.length > 0 ? '❤️' : '🤍'} {post._count.likes}
               </button>
-              <span className="flex items-center gap-1.5 text-sm text-gray-400">
+              <span className="flex items-center gap-1.5 text-sm text-gray-400 dark:text-slate-500">
                 💬 {post._count.comments}
               </span>
             </div>
@@ -174,12 +186,16 @@ export default function FeedClient({ posts }: { posts: Post[] }) {
             {post.comments.length > 0 && (
               <div className="mt-3 space-y-2">
                 {post.comments.map((c, i) => (
-                  <div key={i} className="rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-500">
+                  <div
+                    key={i}
+                    className="rounded-xl bg-gray-50/80 px-3 py-2 text-xs text-gray-600 shadow-sm ring-1 ring-black/5 dark:bg-white/5 dark:text-slate-300 dark:ring-white/10"
+                  >
                     <span className="font-semibold">{c.author.name}:</span> {c.content}
                   </div>
                 ))}
               </div>
             )}
+            </div>
           </div>
         ))}
       </div>

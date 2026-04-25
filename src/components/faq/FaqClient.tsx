@@ -71,42 +71,48 @@ export default function FaqClient({ initialFaqs, canEdit }: { initialFaqs: Faq[]
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">{t('faqPageTitle')}</h1>
+    <div className="mx-auto max-w-2xl px-4 py-6 sm:py-8">
+      <h1 className="mb-6 text-2xl font-bold text-gray-900 dark:text-slate-100">{t('faqPageTitle')}</h1>
 
       {canEdit && (
-        <div className="mb-6 space-y-3 rounded-2xl border border-gray-200 bg-white p-4">
-          <div className="text-sm font-semibold text-gray-900">{t('faqAdd')}</div>
-          {error && <p className="rounded-lg bg-red-50 p-2 text-sm text-red-600">{error}</p>}
+        <div className="fx-border mb-6 rounded-2xl">
+          <div className="fx-card space-y-3 rounded-2xl p-4">
+          <div className="text-sm font-semibold text-gray-900 dark:text-slate-100">{t('faqAdd')}</div>
+          {error && (
+            <p className="rounded-xl bg-red-50 p-2 text-sm text-red-600 dark:bg-red-500/10 dark:text-red-200">
+              {error}
+            </p>
+          )}
           <input
             value={newQuestion}
             onChange={(e) => setNewQuestion(e.target.value)}
             placeholder={t('question')}
-            className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
+            className="w-full rounded-xl border border-gray-200/70 bg-white/70 px-3 py-2 text-sm shadow-sm backdrop-blur transition focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100"
           />
           <textarea
             value={newAnswer}
             onChange={(e) => setNewAnswer(e.target.value)}
             placeholder={t('answer')}
             rows={8}
-            className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
+            className="w-full rounded-xl border border-gray-200/70 bg-white/70 px-3 py-2 text-sm shadow-sm backdrop-blur transition focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100"
           />
           <input
             type="number"
             value={newOrder}
             onChange={(e) => setNewOrder(Number(e.target.value))}
             placeholder={t('order')}
-            className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
+            className="w-full rounded-xl border border-gray-200/70 bg-white/70 px-3 py-2 text-sm shadow-sm backdrop-blur transition focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100"
           />
           <div className="flex justify-end">
             <button
               type="button"
               onClick={createFaq}
               disabled={saving || !newQuestion.trim() || !newAnswer.trim()}
-              className="rounded-xl bg-emerald-600 px-4 py-2 text-sm text-white hover:bg-emerald-700 disabled:opacity-50"
+              className="rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md disabled:opacity-50"
             >
               {saving ? t('saving') : t('create')}
             </button>
+          </div>
           </div>
         </div>
       )}
@@ -144,8 +150,9 @@ function FaqItem({
   const [order, setOrder] = useState<number>(faq.order ?? 0)
 
   return (
-    <details className="group rounded-2xl border border-gray-200 bg-white p-5" open={editing}>
-      <summary className="flex list-none items-center justify-between font-semibold text-gray-900">
+    <details className="group fx-border rounded-2xl" open={editing}>
+      <div className="fx-card rounded-2xl p-5">
+      <summary className="flex list-none items-center justify-between font-semibold text-gray-900 dark:text-slate-100">
         <span className="mr-3 flex-1">{faq.question}</span>
         <span className="flex items-center gap-2">
           {canEdit && (
@@ -155,12 +162,12 @@ function FaqItem({
                 e.preventDefault()
                 setEditing((v) => !v)
               }}
-              className="rounded-lg bg-gray-100 px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-200"
+              className="rounded-xl border border-gray-200/70 bg-white/70 px-3 py-1.5 text-xs font-medium text-gray-800 shadow-sm backdrop-blur transition hover:bg-white dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100 dark:hover:bg-slate-950/60"
             >
               {editing ? t('closeForm') : t('edit')}
             </button>
           )}
-          <span className="text-gray-400 transition-transform group-open:rotate-180">▼</span>
+          <span className="text-gray-400 transition-transform group-open:rotate-180 dark:text-slate-500">▼</span>
         </span>
       </summary>
 
@@ -169,19 +176,19 @@ function FaqItem({
           <input
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
-            className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
+            className="w-full rounded-xl border border-gray-200/70 bg-white/70 px-3 py-2 text-sm shadow-sm backdrop-blur transition focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100"
           />
           <textarea
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
             rows={8}
-            className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
+            className="w-full rounded-xl border border-gray-200/70 bg-white/70 px-3 py-2 text-sm shadow-sm backdrop-blur transition focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100"
           />
           <input
             type="number"
             value={order}
             onChange={(e) => setOrder(Number(e.target.value))}
-            className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
+            className="w-full rounded-xl border border-gray-200/70 bg-white/70 px-3 py-2 text-sm shadow-sm backdrop-blur transition focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100"
           />
           <div className="flex justify-end">
             <button
@@ -191,15 +198,16 @@ function FaqItem({
                 await onSave(faq.id, { question, answer, order })
                 setEditing(false)
               }}
-              className="rounded-xl bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
+              className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md disabled:opacity-50"
             >
               {saving ? t('saving') : t('save')}
             </button>
           </div>
         </div>
       ) : (
-        <p className="mt-3 whitespace-pre-wrap text-sm text-gray-600">{faq.answer}</p>
+        <p className="mt-3 whitespace-pre-wrap text-sm text-gray-600 dark:text-slate-300">{faq.answer}</p>
       )}
+      </div>
     </details>
   )
 }
