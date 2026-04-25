@@ -24,12 +24,14 @@ export function Button({
     <button
       type={type}
       disabled={disabled || isLoading}
+      aria-busy={isLoading || undefined}
       className={clsx(
-        'cursor-pointer rounded-xl font-semibold transition-all',
+        'relative inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl font-semibold transition-all',
+        'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/25',
         {
-          'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-sm hover:-translate-y-0.5 hover:from-blue-700 hover:to-indigo-700 disabled:from-blue-400 disabled:to-blue-400':
+          'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-sm shadow-blue-600/15 hover:-translate-y-0.5 hover:shadow-md hover:shadow-blue-600/20 hover:from-blue-700 hover:to-indigo-700 active:translate-y-0 active:shadow-sm disabled:from-blue-400 disabled:to-blue-400':
             variant === 'primary',
-          'bg-gray-200 text-gray-800 hover:bg-gray-300 disabled:bg-gray-100':
+          'border border-gray-200/80 bg-white/80 text-gray-800 shadow-sm backdrop-blur hover:bg-white disabled:bg-white/60':
             variant === 'secondary',
           'px-3 py-1.5 text-sm': size === 'sm',
           'px-4 py-2 text-base': size === 'md',
@@ -40,7 +42,13 @@ export function Button({
       )}
       {...rest}
     >
-      {isLoading ? '⏳ Загрузка...' : children}
+      {isLoading && (
+        <span
+          aria-hidden="true"
+          className="h-4 w-4 animate-spin rounded-full border-2 border-white/50 border-t-white"
+        />
+      )}
+      <span className={clsx(isLoading && 'opacity-90')}>{children}</span>
     </button>
   )
 }

@@ -10,7 +10,7 @@ export default async function MainLayout({ children }: { children: React.ReactNo
   if (!user) redirect('/login')
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="app-background flex min-h-screen">
       <div className="hidden h-screen overflow-hidden md:block">
         <Sidebar user={user} />
       </div>
@@ -26,7 +26,7 @@ export default async function MainLayout({ children }: { children: React.ReactNo
           <LocaleSwitcher />
         </header>
 
-        <main className="flex-1 overflow-y-auto pb-20 md:pb-0">{children}</main>
+        <main className="subtle-scrollbar flex-1 overflow-y-auto pb-20 md:pb-0">{children}</main>
         <MobileNav />
       </div>
     </div>

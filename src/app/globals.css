@@ -2,33 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@layer base {
+  :root {
+    --bg: 248 250 252; /* slate-50 */
+    --panel: 255 255 255;
+    --ink: 15 23 42; /* slate-900 */
+    --muted: 100 116 139; /* slate-500 */
+    --ring: 59 130 246; /* blue-500 */
+    --shadow: 15 23 42; /* slate-900 */
+  }
 
-html {
-  scroll-behavior: smooth;
-}
+  * {
+    box-sizing: border-box;
+  }
 
-body {
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  html {
+    scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    margin: 0;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      Oxygen, Ubuntu, Cantarell, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: rgb(var(--ink));
+    background: rgb(var(--bg));
+  }
+
+  ::selection {
+    background: rgba(var(--ring), 0.18);
+  }
+
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(var(--ring), 0.22);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 1ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 1ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
 
 .app-background {
   background:
-    radial-gradient(1200px 600px at -15% -10%, rgba(59, 130, 246, 0.12), transparent 60%),
-    radial-gradient(1000px 500px at 115% 110%, rgba(99, 102, 241, 0.1), transparent 60%),
-    #f8fafc;
+    radial-gradient(900px 420px at -10% -10%, rgba(59, 130, 246, 0.18), transparent 55%),
+    radial-gradient(820px 380px at 110% 110%, rgba(99, 102, 241, 0.14), transparent 55%),
+    radial-gradient(600px 280px at 50% -10%, rgba(16, 185, 129, 0.08), transparent 60%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0)) ,
+    rgb(var(--bg));
 }
 
 .glass-panel {
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow:
+    0 10px 30px rgba(var(--shadow), 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.6) inset;
+  backdrop-filter: blur(12px) saturate(1.2);
 }
 
 .animate-fade-in {
@@ -57,5 +94,30 @@ body {
   }
   50% {
     transform: scale(1.03);
+  }
+}
+
+@layer utilities {
+  .subtle-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(100, 116, 139, 0.35) transparent;
+  }
+
+  .subtle-scrollbar::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .subtle-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(100, 116, 139, 0.32);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+  }
+
+  .subtle-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(100, 116, 139, 0.45);
+    border: 3px solid transparent;
+    background-clip: padding-box;
   }
 }

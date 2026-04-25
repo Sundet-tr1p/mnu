@@ -14,10 +14,11 @@ export function Input({ label, error, className, ...props }: InputProps) {
       {label && <label className="mb-2 block text-sm font-medium text-gray-700">{label}</label>}
       <input
         className={clsx(
-          'w-full rounded-xl border bg-white/90 px-4 py-2 transition-all focus:outline-none focus:ring-2',
+          'w-full rounded-xl border bg-white/80 px-4 py-2 transition-all',
+          'placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20',
           {
-            'border-red-500 focus:ring-red-500': error,
-            'border-gray-300 focus:ring-blue-500 hover:border-blue-300': !error,
+            'border-red-400 focus-visible:ring-red-500/20': error,
+            'border-gray-200/80 hover:border-gray-300 focus:border-blue-300': !error,
           },
           className,
         )}
