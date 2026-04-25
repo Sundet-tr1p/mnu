@@ -38,10 +38,12 @@ export default async function NotificationsPage() {
   })
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">{st(locale, 'notificationsPageTitle')}</h1>
+    <div className="mx-auto max-w-2xl px-4 py-6 sm:py-8">
+      <h1 className="mb-6 text-2xl font-bold text-gray-900 dark:text-slate-100">
+        {st(locale, 'notificationsPageTitle')}
+      </h1>
       {notifications.length === 0 ? (
-        <div className="py-12 text-center text-gray-400">
+        <div className="py-12 text-center text-gray-400 dark:text-slate-500">
           <p>{st(locale, 'noNotificationsYet')}</p>
         </div>
       ) : (
@@ -51,17 +53,19 @@ export default async function NotificationsPage() {
             return (
               <div
                 key={n.id}
-                className={`rounded-2xl border bg-white p-4 ${
-                  n.isRead ? 'border-gray-100' : 'border-blue-200 bg-blue-50'
+                className={`rounded-2xl border p-4 ${
+                  n.isRead
+                    ? 'fx-card border-gray-200/60'
+                    : 'fx-card border-blue-200/80 bg-blue-50/60 dark:border-indigo-500/30 dark:bg-indigo-500/10'
                 }`}
               >
-                <div className="text-sm font-medium text-gray-900">
+                <div className="text-sm font-medium text-gray-900 dark:text-slate-100">
                   {parsed.title || importantTypeFallback(locale, n.type)}
                 </div>
                 {parsed.detail && (
-                  <p className="mt-1 text-xs text-gray-600">{parsed.detail}</p>
+                  <p className="mt-1 text-xs text-gray-600 dark:text-slate-300">{parsed.detail}</p>
                 )}
-                <p className="mt-1 text-xs text-gray-400">
+                <p className="mt-1 text-xs text-gray-400 dark:text-slate-500">
                   {new Date(n.createdAt).toLocaleString(dateTag)}
                 </p>
               </div>

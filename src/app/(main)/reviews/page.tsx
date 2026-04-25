@@ -33,33 +33,35 @@ export default async function ReviewsPage() {
   const teacherMap = Object.fromEntries(teacherRows.map((t) => [t.id, t]))
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">{st(locale, 'reviewsPageTitle')}</h1>
+    <div className="mx-auto max-w-2xl px-4 py-6 sm:py-8">
+      <h1 className="mb-6 text-2xl font-bold text-gray-900 dark:text-slate-100">{st(locale, 'reviewsPageTitle')}</h1>
 
       <ReviewForm teachers={teachers} canSubmit={user.role === 'STUDENT'} />
 
       <div className="space-y-3">
         {reviews.length === 0 ? (
-          <p className="py-8 text-center text-gray-400">{st(locale, 'noReviewsYet')}</p>
+          <p className="py-8 text-center text-gray-400 dark:text-slate-500">{st(locale, 'noReviewsYet')}</p>
         ) : (
           reviews.map((r) => {
             const t = teacherMap[r.teacherId]
             return (
-              <div key={r.id} className="rounded-2xl border border-gray-200 bg-white p-5">
+              <div key={r.id} className="fx-border rounded-2xl">
+                <div className="fx-card rounded-2xl p-5">
                 <div className="mb-2 flex justify-between text-sm">
-                  <span className="font-medium text-gray-900">
+                  <span className="font-medium text-gray-900 dark:text-slate-100">
                     {r.user.name} {r.user.surname}
                   </span>
                   <span className="text-amber-500">{'★'.repeat(r.rating)}</span>
                 </div>
-                <p className="mb-2 text-xs text-gray-500">
+                <p className="mb-2 text-xs text-gray-500 dark:text-slate-400">
                   {st(locale, 'reviewAboutTeacher')}{' '}
                   {t ? `${t.name} ${t.surname}` : st(locale, 'emDash')}
                 </p>
-                <p className="text-sm text-gray-700">{r.comment}</p>
-                <p className="mt-2 text-xs text-gray-400">
+                <p className="whitespace-pre-wrap text-sm text-gray-700 dark:text-slate-200">{r.comment}</p>
+                <p className="mt-2 text-xs text-gray-400 dark:text-slate-500">
                   {new Date(r.createdAt).toLocaleDateString(dateTag)}
                 </p>
+                </div>
               </div>
             )
           })

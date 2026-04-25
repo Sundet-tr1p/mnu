@@ -150,65 +150,64 @@ function FaqItem({
   const [order, setOrder] = useState<number>(faq.order ?? 0)
 
   return (
-    <details className="group fx-border rounded-2xl" open={editing}>
+    <div className="fx-border rounded-2xl">
       <div className="fx-card rounded-2xl p-5">
-      <summary className="flex list-none items-center justify-between font-semibold text-gray-900 dark:text-slate-100">
-        <span className="mr-3 flex-1">{faq.question}</span>
-        <span className="flex items-center gap-2">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <div className="text-sm font-semibold text-gray-900 dark:text-slate-100">{faq.question}</div>
+            {/* ВАЖНО: ответ виден сразу (как раньше) */}
+            <p className="mt-2 whitespace-pre-wrap text-sm text-gray-600 dark:text-slate-300">
+              {faq.answer}
+            </p>
+          </div>
+
           {canEdit && (
             <button
               type="button"
-              onClick={(e) => {
-                e.preventDefault()
-                setEditing((v) => !v)
-              }}
-              className="rounded-xl border border-gray-200/70 bg-white/70 px-3 py-1.5 text-xs font-medium text-gray-800 shadow-sm backdrop-blur transition hover:bg-white dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100 dark:hover:bg-slate-950/60"
+              onClick={() => setEditing((v) => !v)}
+              className="shrink-0 rounded-xl border border-gray-200/70 bg-white/70 px-3 py-1.5 text-xs font-medium text-gray-800 shadow-sm backdrop-blur transition hover:bg-white dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100 dark:hover:bg-slate-950/60"
             >
               {editing ? t('closeForm') : t('edit')}
             </button>
           )}
-          <span className="text-gray-400 transition-transform group-open:rotate-180 dark:text-slate-500">▼</span>
-        </span>
-      </summary>
-
-      {editing ? (
-        <div className="mt-3 space-y-3">
-          <input
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            className="w-full rounded-xl border border-gray-200/70 bg-white/70 px-3 py-2 text-sm shadow-sm backdrop-blur transition focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100"
-          />
-          <textarea
-            value={answer}
-            onChange={(e) => setAnswer(e.target.value)}
-            rows={8}
-            className="w-full rounded-xl border border-gray-200/70 bg-white/70 px-3 py-2 text-sm shadow-sm backdrop-blur transition focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100"
-          />
-          <input
-            type="number"
-            value={order}
-            onChange={(e) => setOrder(Number(e.target.value))}
-            className="w-full rounded-xl border border-gray-200/70 bg-white/70 px-3 py-2 text-sm shadow-sm backdrop-blur transition focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100"
-          />
-          <div className="flex justify-end">
-            <button
-              type="button"
-              disabled={saving || !question.trim() || !answer.trim()}
-              onClick={async () => {
-                await onSave(faq.id, { question, answer, order })
-                setEditing(false)
-              }}
-              className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md disabled:opacity-50"
-            >
-              {saving ? t('saving') : t('save')}
-            </button>
-          </div>
         </div>
-      ) : (
-        <p className="mt-3 whitespace-pre-wrap text-sm text-gray-600 dark:text-slate-300">{faq.answer}</p>
-      )}
+
+        {editing && (
+          <div className="mt-4 space-y-3 border-t border-gray-200/70 pt-4 dark:border-slate-700/40">
+            <input
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              className="w-full rounded-xl border border-gray-200/70 bg-white/70 px-3 py-2 text-sm shadow-sm backdrop-blur transition focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100"
+            />
+            <textarea
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              rows={8}
+              className="w-full rounded-xl border border-gray-200/70 bg-white/70 px-3 py-2 text-sm shadow-sm backdrop-blur transition focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100"
+            />
+            <input
+              type="number"
+              value={order}
+              onChange={(e) => setOrder(Number(e.target.value))}
+              className="w-full rounded-xl border border-gray-200/70 bg-white/70 px-3 py-2 text-sm shadow-sm backdrop-blur transition focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-slate-700/50 dark:bg-slate-950/40 dark:text-slate-100"
+            />
+            <div className="flex justify-end">
+              <button
+                type="button"
+                disabled={saving || !question.trim() || !answer.trim()}
+                onClick={async () => {
+                  await onSave(faq.id, { question, answer, order })
+                  setEditing(false)
+                }}
+                className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md disabled:opacity-50"
+              >
+                {saving ? t('saving') : t('save')}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
-    </details>
+    </div>
   )
 }
 

@@ -40,6 +40,24 @@
     background: rgb(var(--bg));
   }
 
+  /* Subtle noise overlay (premium feel). */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.08;
+    mix-blend-mode: multiply;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+  }
+
+  .dark body::before {
+    opacity: 0.12;
+    mix-blend-mode: screen;
+  }
+
   ::selection {
     background: rgba(var(--ring), 0.18);
   }
@@ -57,9 +75,17 @@
       scroll-behavior: auto !important;
     }
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .app-background::before,
+    .app-background::after {
+      animation: none !important;
+    }
+  }
 }
 
 .app-background {
+  position: relative;
   background:
     radial-gradient(900px 420px at -10% -10%, rgba(59, 130, 246, 0.18), transparent 55%),
     radial-gradient(820px 380px at 110% 110%, rgba(99, 102, 241, 0.14), transparent 55%),
@@ -75,6 +101,54 @@
     radial-gradient(600px 280px at 50% -10%, rgba(16, 185, 129, 0.10), transparent 60%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0)) ,
     rgb(var(--bg));
+}
+
+/* Animated ambient blobs (very subtle). */
+.app-background::before,
+.app-background::after {
+  content: '';
+  position: fixed;
+  width: 520px;
+  height: 520px;
+  border-radius: 999px;
+  filter: blur(70px);
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
+  animation: ambientFloat 14s ease-in-out infinite;
+}
+
+.app-background::before {
+  left: -160px;
+  top: -140px;
+  background: radial-gradient(circle at 30% 30%, rgba(59, 130, 246, 0.45), transparent 60%);
+}
+
+.app-background::after {
+  right: -180px;
+  bottom: -160px;
+  animation-delay: -6s;
+  background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.38), transparent 60%);
+}
+
+.dark .app-background::before {
+  opacity: 0.28;
+  background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.55), transparent 60%);
+}
+
+.dark .app-background::after {
+  opacity: 0.22;
+  background: radial-gradient(circle at 30% 30%, rgba(59, 130, 246, 0.45), transparent 60%);
+}
+
+@keyframes ambientFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(22px, 18px, 0) scale(1.06);
+  }
 }
 
 .glass-panel {
